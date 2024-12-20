@@ -11,6 +11,11 @@
  * Domain Path:       /languages/
  */
 
+define( 'ASN_ASSETS_DIR', plugin_dir_url( __FILE__ ) . 'assets/' );
+define( 'ASN_ASSETS_PUBLIC_DIR', plugin_dir_url( __FILE__ ) . 'assets/public' );
+define( 'ASN_ASSETS_ADMIN_DIR', plugin_dir_url( __FILE__ ) . 'assets/admin' );
+define( 'ASN_VERSION', time() ); // Set time for cache busting.
+
 class AssetNinja {
 	public function __construct() {
 		add_action( 'init', array( $this, 'load_textdomain' ) );
@@ -18,8 +23,12 @@ class AssetNinja {
 	}
 
 	public function load_front_assets() {
-		wp_enqueue_style( 'assetsninja-style', plugin_dir_url( __FILE__ ) . 'assets/public/css/style.css', array(), '1.0', 'all' );
-		wp_enqueue_script( 'assetsninja-script', plugin_dir_url( __FILE__ ) . 'assets/public/js/main.js', array( 'jquery' ), '1.0', true );
+		wp_enqueue_style( 'asn-style', ASN_ASSETS_PUBLIC_DIR . '/css/style.css', array(), ASN_VERSION, 'all' );
+		wp_enqueue_script( 'asn-script', ASN_ASSETS_PUBLIC_DIR . '/js/main.js', array( 'jquery', 'asn-another' ), ASN_VERSION, true ); // It will load after the another script for sure. since dependency.
+		wp_enqueue_script( 'asn-another', ASN_ASSETS_PUBLIC_DIR . '/js/another.js', array( 'jquery' ), ASN_VERSION, true );
+
+		// NOTE: You can't have the third script depend on the first script again -> circular dependency. 3rd script can depend on the 2nd script. 2nd can depend on the 1st script. but 1st can't depend on the 3rd script.
+		// This will create an infinite loop, the software will crash. 
 	}
 
 	public function load_textdomain() {
