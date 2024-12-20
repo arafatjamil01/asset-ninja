@@ -29,6 +29,14 @@ class AssetNinja {
 
 		// NOTE: You can't have the third script depend on the first script again -> circular dependency. 3rd script can depend on the 2nd script. 2nd can depend on the 1st script. but 1st can't depend on the 3rd script.
 		// This will create an infinite loop, the software will crash. 
+
+		// Passing data to JS from php
+		$data = [
+			'name' => "Arafat Jamil",
+			'github' => "https://github.com/arafatjamil01"
+		];
+
+		wp_localize_script( 'asn-script', 'araf', $data ); // araf is the name of the object you can define yourself.
 	}
 
 	public function load_textdomain() {
