@@ -44,6 +44,18 @@ class AssetNinja {
 		// Stylesheets.
 		wp_enqueue_style( 'asn-style', ASN_ASSETS_PUBLIC_DIR . '/css/style.css', array(), ASN_VERSION, 'all' );
 
+		$item_style = <<<EOD
+
+		.item {
+			background: #f1f1f1;
+			color: #333;
+			padding: 10px;
+			margin-bottom: 10px;
+		}
+		EOD;
+
+		wp_add_inline_style( 'asn-style', $item_style );
+
 		// Scripts.
 		// wp_enqueue_script( 'asn-script', ASN_ASSETS_PUBLIC_DIR . '/js/main.js', array( 'jquery', 'asn-another' ), ASN_VERSION, true ); // It will load after the another script for sure. since dependency.
 		// wp_enqueue_script( 'asn-another', ASN_ASSETS_PUBLIC_DIR . '/js/another.js', array( 'jquery' ), ASN_VERSION, true );
@@ -74,6 +86,8 @@ class AssetNinja {
 		);
 
 		wp_localize_script( 'asn-script', 'araf', $data ); // araf is the name of the object you can define yourself.
+
+		wp_add_inline_script( 'asn-script', 'console.log("The Name: " + araf.name);' );
 	}
 
 	public function load_textdomain() {
