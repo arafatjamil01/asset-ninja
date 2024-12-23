@@ -34,17 +34,36 @@ class AssetNinja {
 	}
 
 	public function load_front_assets() {
+		// Stylesheets.
 		wp_enqueue_style( 'asn-style', ASN_ASSETS_PUBLIC_DIR . '/css/style.css', array(), ASN_VERSION, 'all' );
-		wp_enqueue_script( 'asn-script', ASN_ASSETS_PUBLIC_DIR . '/js/main.js', array( 'jquery', 'asn-another' ), ASN_VERSION, true ); // It will load after the another script for sure. since dependency.
-		wp_enqueue_script( 'asn-another', ASN_ASSETS_PUBLIC_DIR . '/js/another.js', array( 'jquery' ), ASN_VERSION, true );
 
-		// NOTE: You can't have the third script depend on the first script again -> circular dependency. 3rd script can depend on the 2nd script. 2nd can depend on the 1st script. but 1st can't depend on the 3rd script.
+		// Scripts.
+		// wp_enqueue_script( 'asn-script', ASN_ASSETS_PUBLIC_DIR . '/js/main.js', array( 'jquery', 'asn-another' ), ASN_VERSION, true ); // It will load after the another script for sure. since dependency.
+		// wp_enqueue_script( 'asn-another', ASN_ASSETS_PUBLIC_DIR . '/js/another.js', array( 'jquery' ), ASN_VERSION, true );
+
+		// Using a loop to load script, instead of writing the function again and again.
+		$js_files = array(
+			'asn-script'  => array(
+				'path'       => ASN_ASSETS_PUBLIC_DIR . '/js/main.js',
+				'dependency' => array( 'jquery', 'asn-another' ),
+			),
+			'asn-another' => array(
+				'path'       => ASN_ASSETS_PUBLIC_DIR . '/js/another.js',
+				'dependency' => array( 'jquery' ),
+			),
+		);
+
+		foreach ( $js_files as $handle => $fileinfo ) {
+			wp_enqueue_script( $handle, $fileinfo['path'], $fileinfo['dependency'], ASN_VERSION, true );
+		}
+
+		// NOTE: You can't have the third script depend on the first script again->circular dependency . 3rd script can depend on the 2nd script . 2nd can depend on the 1st script . but 1st can't depend on the 3rd script.
 		// This will create an infinite loop, the software will crash.
 
-		// Passing data to JS from php
+		// Passing data to JS from php.
 		$data = array(
 			'name'   => 'Arafat Jamil',
-			'github' => 'https://github.com/arafatjamil01',
+			'github' => 'https:// github.com/arafatjamil01',
 		);
 
 		wp_localize_script( 'asn-script', 'araf', $data ); // araf is the name of the object you can define yourself.
