@@ -18,9 +18,16 @@ define( 'ASN_VERSION', time() ); // Set time for cache busting.
 
 class AssetNinja {
 	public function __construct() {
-		add_action( 'init', array( $this, 'load_textdomain' ) );
+		add_action( 'wp_enqueue_scripts', array( $this, 'script_change' ), 21 );
+		add_action( 'plugins_loaded', array( $this, 'load_textdomain' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'load_front_assets' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'load_admin_assets' ) );
+	}
+
+	public function script_change() {
+		// Deregistering the FontAwesome from the plugin.
+		wp_deregister_style( 'hfe-social-share-icons-fontawesome' );
+		wp_enqueue_style( 'fontawesome-css', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', array(), '5.15.4', 'all' );
 	}
 
 	public function load_admin_assets( $screen ) {
